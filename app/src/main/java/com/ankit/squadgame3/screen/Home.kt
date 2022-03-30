@@ -20,7 +20,6 @@ fun Home(navController: NavController?, resetGame: () -> Unit, exit: () -> Unit)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkColor)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -31,7 +30,7 @@ fun Home(navController: NavController?, resetGame: () -> Unit, exit: () -> Unit)
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .height(40.dp),
+                .height(50.dp),
             onClick = {
                 navController?.navigate("slot_screen")
                 resetGame()
@@ -39,24 +38,24 @@ fun Home(navController: NavController?, resetGame: () -> Unit, exit: () -> Unit)
             text = "Play",
             enabled = true
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         SlotButton(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(50.dp),
         onClick = {
             navController?.navigate("leaderboard")
         },
         text = "Leaderboard",
         enabled = true
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         SlotRedButton(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .height(40.dp),
+                .height(50.dp),
             onClick = {
                 exit()
             },

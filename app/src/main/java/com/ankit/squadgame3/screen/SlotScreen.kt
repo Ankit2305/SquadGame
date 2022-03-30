@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,24 +41,26 @@ fun SlotScreen(
     onRotate: () -> Unit,
     resetGame: () -> Unit
 ) {
-    if(needUserName) {
-        EnterName(
-            text = userName,
-            onUpdateText = onChangeUserName,
-            onContinue = onContinue
-        )
-    } else {
-        SlotPlayScreen(
-            lottieId,
-            score,
-            attemptsLeft,
-            memberIndex,
-            squadIndex,
-            onRotate,
-            enabled,
-            resetGame,
-            showLottie
-        )
+    Box(modifier = Modifier.fillMaxSize()) {
+        if(needUserName) {
+            EnterName(
+                text = userName,
+                onUpdateText = onChangeUserName,
+                onContinue = onContinue
+            )
+        } else {
+            SlotPlayScreen(
+                lottieId,
+                score,
+                attemptsLeft,
+                memberIndex,
+                squadIndex,
+                onRotate,
+                enabled,
+                resetGame,
+                showLottie
+            )
+        }
     }
 }
 
@@ -91,11 +94,9 @@ fun SlotPlayScreen(
         speed = speed,
         restartOnPlay = true
     )
-    val backgroundColor = BackgroundColor
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -157,7 +158,7 @@ fun GameOver(resetGame: () -> Unit, score: Int) {
             text = "Play Again",
             gradient = greenToBlueHorizontalGradient,
             onClick = resetGame,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(50.dp)
         )
         Spacer(modifier = Modifier.height(86.dp))
     }
@@ -217,7 +218,7 @@ fun SlotScreenBody(
             SlotButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(50.dp),
                 onClick = { onRotate() },
                 text = "Spin",
                 enabled = enabled
@@ -291,8 +292,7 @@ fun SlotItemComposable(
 fun EnterName(text: String, onUpdateText: (String) -> Unit, onContinue: () -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundColor),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

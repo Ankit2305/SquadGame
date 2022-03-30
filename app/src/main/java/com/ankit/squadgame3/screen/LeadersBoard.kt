@@ -14,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ankit.squadgame3.SlotViewModel
 import com.ankit.squadgame3.db.Score
@@ -30,14 +31,13 @@ fun LeadersBoardScreen(slotViewModel: SlotViewModel) {
 fun LeadersBoard(scores: List<Score>) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundColor),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             modifier = Modifier.padding(16.dp),
             text = "Leaderboard",
-            style = MaterialTheme.typography.h5.copy(Color.White)
+            style = MaterialTheme.typography.h4.copy(Color.White, fontWeight = FontWeight.Bold)
         )
         LeadersBoardList(scores = scores)
     }
