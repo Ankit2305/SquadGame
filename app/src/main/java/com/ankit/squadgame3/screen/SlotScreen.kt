@@ -158,7 +158,9 @@ fun GameOver(resetGame: () -> Unit, score: Int) {
             text = "Play Again",
             gradient = greenToBlueHorizontalGradient,
             onClick = resetGame,
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         )
         Spacer(modifier = Modifier.height(86.dp))
     }
@@ -298,14 +300,23 @@ fun EnterName(text: String, onUpdateText: (String) -> Unit, onContinue: () -> Un
     ) {
         Text(text = "Enter Name", style = MaterialTheme.typography.body1.copy(color = Color.White))
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            value = text,
-            onValueChange = onUpdateText,
-            textStyle = MaterialTheme.typography.body2.copy(color = Color.White)
-        )
+        Card(
+            Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+            backgroundColor = Color.Transparent,
+            shape = RoundedCornerShape(4.dp)
+        ) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0x33FFFFFF)),
+                value = text,
+                onValueChange = onUpdateText,
+                textStyle = MaterialTheme.typography.body2.copy(color = Color.White)
+            )
+        }
+
         SlotButton(
             modifier = Modifier
                 .fillMaxWidth()
