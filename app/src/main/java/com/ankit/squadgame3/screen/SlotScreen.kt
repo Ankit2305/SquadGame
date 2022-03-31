@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.*
 import com.ankit.squadgame3.*
 import com.ankit.squadgame3.R
+import com.ankit.squadgame3.component.AnimatingSlots
 import com.ankit.squadgame3.component.GradientButton
 import com.ankit.squadgame3.component.SlotButton
 import com.ankit.squadgame3.model.*
@@ -28,6 +29,8 @@ import com.ankit.squadgame3.ui.theme.DarkColor
 fun SlotScreen(
     memberIndex: Int,
     squadIndex: Int,
+    memberNextIndex: Int,
+    squadNextIndex: Int,
     score: Int,
     enabled: Boolean,
     answerState: AnswerState,
@@ -39,7 +42,10 @@ fun SlotScreen(
     showLottie: Boolean,
     attemptsLeft: Int,
     onRotate: () -> Unit,
-    resetGame: () -> Unit
+    resetGame: () -> Unit,
+    offsetMemberY: Int,
+    offsetSquadY: Int,
+    onLottieFinished: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if(needUserName) {
@@ -55,10 +61,15 @@ fun SlotScreen(
                 attemptsLeft,
                 memberIndex,
                 squadIndex,
+                memberNextIndex,
+                squadNextIndex,
                 onRotate,
                 enabled,
                 resetGame,
-                showLottie
+                showLottie,
+                offsetMemberY,
+                offsetSquadY,
+                onLottieFinished
             )
         }
     }
@@ -72,14 +83,19 @@ fun SlotPlayScreen(
     attemptsLeft: Int,
     memberIndex: Int,
     squadIndex: Int,
+    memberNextIndex: Int,
+    squadNextIndex: Int,
     onRotate: () -> Unit,
     enabled: Boolean,
     resetGame: () -> Unit,
-    showLottie: Boolean
+    showLottie: Boolean,
+    offsetMemberY: Int,
+    offsetSquadY: Int,
+    onLottieFinished: () -> Unit
 ) {
-    var isPlaying by remember {
-        mutableStateOf(true)
-    }
+//    var isPlaying by remember {
+//        mutableStateOf(true)
+//    }
     var speed by remember {
         mutableStateOf(1f)
     }
@@ -90,10 +106,14 @@ fun SlotPlayScreen(
     val progress by animateLottieCompositionAsState(
         composition,
         iterations = 131,
-        isPlaying = isPlaying,
+        isPlaying = showLottie,
         speed = speed,
         restartOnPlay = true
     )
+    if(progress == 1f) {
+
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -108,13 +128,17 @@ fun SlotPlayScreen(
             )
             SquadGameHeader(
                 modifier = Modifier
-                    .padding(top = 64.dp)
+                    .padding(top = 32.dp)
                     .align(Alignment.CenterHorizontally)
             )
             AnimatedVisibility(attemptsLeft > 0) {
                 SlotScreenBody(
                     memberIndex = memberIndex,
                     squadIndex = squadIndex,
+                    memberNextIndex = memberNextIndex,
+                    squadNextIndex = squadNextIndex,
+                    offsetSquadY = offsetSquadY,
+                    offsetMemberY = offsetMemberY,
                     onRotate = onRotate,
                     enabled = enabled
                 )
@@ -197,7 +221,11 @@ fun ScoreCard(
 fun SlotScreenBody(
     memberIndex: Int,
     squadIndex: Int,
+    memberNextIndex: Int,
+    squadNextIndex: Int,
     enabled: Boolean,
+    offsetSquadY: Int,
+    offsetMemberY: Int,
     onRotate: () -> Unit
 ) {
     Column(
@@ -207,14 +235,23 @@ fun SlotScreenBody(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Row(
+        Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            shape = RoundedCornerShape(4.dp),
+            elevation = 4.dp,
+            backgroundColor = DarkColor
         ) {
-            SlotItemComposable(memberIndex, 0)
-            SlotItemComposable(squadIndex, 1)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                AnimatingSlots(currentIndex = memberIndex, targetIndex = memberNextIndex, type = 0, offsetY = offsetSquadY)
+                AnimatingSlots(currentIndex = squadIndex, targetIndex = squadNextIndex, type = 1, offsetY = offsetMemberY)
+            }
         }
+
         Spacer(modifier = Modifier.height(32.dp))
         Box(modifier = Modifier.padding(16.dp)) {
             SlotButton(
@@ -241,13 +278,14 @@ fun SlotScreenBody(
 fun SquadGameHeader(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
-        text = "Squad Machine",
+        text = "Squad Games",
         style = MaterialTheme.typography.h3.copy(fontFamily = PermanentMarker, color = Color.White)
     )
 }
 
 @Composable
 fun SlotItemComposable(
+    modifier: Modifier = Modifier,
     slotItemIndex: Int,
     type: Int
 ) {
@@ -256,10 +294,9 @@ fun SlotItemComposable(
     else
         squads[slotItemIndex]
 
-    Box() {
+    Box(modifier = modifier) {
         Card(
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier,
             elevation = 4.dp,
             shape = RoundedCornerShape(6.dp),
             backgroundColor = Color.White
@@ -302,8 +339,8 @@ fun EnterName(text: String, onUpdateText: (String) -> Unit, onContinue: () -> Un
         Spacer(modifier = Modifier.height(16.dp))
         Card(
             Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
             backgroundColor = Color.Transparent,
             shape = RoundedCornerShape(4.dp)
         ) {
@@ -370,6 +407,8 @@ fun SlotScreenPreview() {
     SlotScreen(
         squadIndex = 0,
         memberIndex = 0,
+        squadNextIndex = 0,
+        memberNextIndex = 0,
         onRotate = {},
         showLottie = false,
         answerState = AnswerState.NOT_ANSWERED,
@@ -381,6 +420,9 @@ fun SlotScreenPreview() {
         userName = "",
         onChangeUserName = {},
         onContinue = {},
-        needUserName = false
+        needUserName = false,
+        offsetMemberY = 0,
+        offsetSquadY = 0,
+        onLottieFinished = {}
     )
 }
